@@ -1,73 +1,124 @@
-# React + TypeScript + Vite
+# Scoop AI Chat Widget 🍨💬
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**React-based Chat Widget for Scoop.ge** - Real-time Streaming
 
-Currently, two official plugins are available:
+[![React](https://img.shields.io/badge/React-19.1-61dafb.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg)](https://www.typescriptlang.org/)
+[![Cloud Run](https://img.shields.io/badge/Google-Cloud%20Run-blue.svg)](https://cloud.google.com/run)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🎯 რა არის?
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Scoop AI Chat Widget არის **React-based** ჩატ ვიჯეტი სპორტული კვების კონსულტაციისთვის.
 
-## Expanding the ESLint configuration
+### ✨ ფუნქციონალი
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🎨 **Light Theme** - Scoop brand colors (Pine Green #0A7364)
+- ⚡ **Real-time Streaming** - Token-by-token responses
+- 💬 **Quick Replies** - კონტექსტური ღილაკები
+- 📝 **Markdown Rendering** - ფორმატირებული პასუხები
+- 📱 **Responsive Design** - Mobile-friendly
+- 🇬🇪 **Georgian Language** - სრული ქართული interface
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Quick Start
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Development
+
+```bash
+npm install
+npm run dev
+# → http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Production Build
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run preview
 ```
+
+---
+
+## 🏗️ არქიტექტურა
+
+```
+scoop-widget/
+├── src/
+│   ├── App.tsx              # Main app + Streaming logic
+│   ├── components/
+│   │   ├── ChatArea.tsx     # Chat messages + Quick Replies
+│   │   ├── Sidebar.tsx      # Conversation list
+│   │   └── SuggestionCards.tsx  # Welcome cards
+│   └── styles/
+│       └── widget.css       # All styling
+├── Dockerfile               # Cloud Run deployment
+└── nginx.conf               # Static file serving
+```
+
+---
+
+## 📡 API Integration
+
+Widget connects to Scoop AI Backend:
+
+```typescript
+const BACKEND_URL = 'https://scoop-ai-sdk-358331686110.europe-west1.run.app';
+
+// Streaming endpoint
+POST /chat/stream → SSE (Server-Sent Events)
+
+// Fallback endpoint
+POST /chat → JSON response
+```
+
+---
+
+## 🎨 Branding
+
+| Element | Value |
+|---------|-------|
+| Primary Color | `#0A7364` (Pine Green) |
+| Theme | Light |
+| Font | Noto Sans Georgian |
+| Icon | 🍨 |
+
+---
+
+## 🚀 Deployment
+
+### Cloud Run (Recommended)
+
+Service deployed at:
+```
+https://scoop-widget-358331686110.europe-west1.run.app
+```
+
+### Auto-Deploy
+
+GitHub push → Cloud Build → Cloud Run (automatic)
+
+---
+
+## 📦 Tech Stack
+
+- **React 19.1** - UI framework
+- **TypeScript 5.8** - Type safety
+- **Vite 7.3** - Build tool
+- **react-markdown** - Markdown rendering
+- **Nginx** - Static file serving (production)
+
+---
+
+## 🔗 Related Repositories
+
+- [claude-agent-experiments](https://github.com/Maqashable-284/claude-agent-experiments) - Backend API
+- [scoop-chainlit](https://github.com/Maqashable-284/scoop-chainlit) - Chainlit Web UI
+
+---
+
+## 📄 License
+
+MIT
