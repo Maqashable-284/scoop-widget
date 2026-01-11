@@ -96,8 +96,8 @@ function App() {
     }));
 
     try {
-      // Use streaming endpoint
-      const response = await fetch(`${BACKEND_URL}/chat/stream`, {
+      // Use regular endpoint (streaming temporarily disabled)
+      const response = await fetch(`${BACKEND_URL}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,73 +113,24 @@ function App() {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let fullResponse = '';
+      const data = await response.json();
+      const responseText = data.response_text_geo || data.response || data.text ||
+        'ბოდიში, პასუხის გენერირება ვერ მოხერხდა.';
 
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value, { stream: true });
-
-          // Parse SSE events
-          const lines = chunk.split('\n');
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6);
-              if (data && data !== '{}') {
-                fullResponse += data;
-
-                // Update message content in real-time
-                setConversations(prev => prev.map(conv => {
-                  if (conv.id === convId) {
-                    return {
-                      ...conv,
-                      messages: conv.messages.map(msg =>
-                        msg.id === assistantMessageId
-                          ? { ...msg, content: fullResponse }
-                          : msg
-                      ),
-                    };
-                  }
-                  return conv;
-                }));
-              }
-            }
-          }
+      // Update assistant message with response
+      setConversations(prev => prev.map(conv => {
+        if (conv.id === convId) {
+          return {
+            ...conv,
+            messages: conv.messages.map(msg =>
+              msg.id === assistantMessageId
+                ? { ...msg, content: responseText }
+                : msg
+            ),
+          };
         }
-      }
-
-      // Fallback: if streaming didn't work, use regular endpoint
-      if (!fullResponse) {
-        const fallbackResponse = await fetch(`${BACKEND_URL}/chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: `widget_${convId}`,
-            message: text,
-          }),
-        });
-        const data = await fallbackResponse.json();
-        fullResponse = data.response_text_geo || data.response || 'ბოდიში, პასუხი ვერ მივიღე.';
-
-        // Update with fallback response
-        setConversations(prev => prev.map(conv => {
-          if (conv.id === convId) {
-            return {
-              ...conv,
-              messages: conv.messages.map(msg =>
-                msg.id === assistantMessageId
-                  ? { ...msg, content: fullResponse }
-                  : msg
-              ),
-            };
-          }
-          return conv;
-        }));
-      }
+        return conv;
+      }));
 
     } catch (error) {
       console.error('Error sending message:', error);
